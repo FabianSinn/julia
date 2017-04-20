@@ -8,19 +8,19 @@ include $(JULIAHOME)/Make.inc
 release: # default target
 all: release debug
 
-embedding-args := \
+EMBEDDING_ARGS := \
 	-C $(BUILDROOT)/examples/embedding \
 	JULIA='$(call spawn,$(JULIA_EXECUTABLE))' \
 	BIN='$(build_bindir)' \
 	CC='$(CC)'
 
 release debug:
-	@$(MAKE) $@ $(embedding-args)
+	@$(MAKE) $@ $(EMBEDDING_ARGS)
 
 eprint-%:
-	@$(MAKE) print-$* $(embedding-args)
+	@$(MAKE) print-$* $(EMBEDDING_ARGS)
 
 clean:
-	@$(MAKE) clean $(embedding-args)
+	@$(MAKE) clean $(EMBEDDING_ARGS)
 
 .PHONY: all release debug clean eprint-*
