@@ -134,11 +134,10 @@ script:
     ##    /tmp/julia/bin/julia --check-bounds=yes runtests.jl libgit2-online download pkg
     # test that the embedding code works on our installation
     - mkdir /tmp/embedding-test &&
-        make -C /tmp/julia/share/doc/julia/examples/embedding \
+        make check -C /tmp/julia/share/doc/julia/examples/embedding \
              JULIA=/tmp/julia/bin/julia \
              BIN=/tmp/embedding-test \
              "$(cd julia2 && make print-CC)"
-    - /tmp/julia/bin/julia /tmp/julia/share/doc/julia/examples/embedding/embedding-test.jl /tmp/embedding-test/embedding
     # restore initial state and prepare for travis caching
     - cd `dirname $TRAVIS_BUILD_DIR` && mv julia2 julia &&
         rm -f julia/deps/scratch/libgit2-*/CMakeFiles/CMakeOutput.log

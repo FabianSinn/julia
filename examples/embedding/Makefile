@@ -19,9 +19,9 @@ EXE := $(suffix $(abspath $(JULIA)))
 
 # get compiler and linker flags. (see: `contrib/julia-config.jl`)
 JULIA_CONFIG := $(JULIA) -e 'include(joinpath(JULIA_HOME, Base.DATAROOTDIR, "julia", "julia-config.jl"))' --
-CPPFLAGS-add :=
-CFLAGS-add = $(shell $(JULIA_CONFIG) --cflags)
-LDFLAGS-add = -lm $(shell $(JULIA_CONFIG) --ldflags --ldlibs)
+CPPFLAGS_ADD :=
+CFLAGS_ADD = $(shell $(JULIA_CONFIG) --cflags)
+LDFLAGS_ADD = -lm $(shell $(JULIA_CONFIG) --ldflags --ldlibs)
 
 DEBUGFLAGS += -g
 
@@ -31,15 +31,19 @@ release: $(BIN)/embedding$(EXE)
 debug:   $(BIN)/embedding-debug$(EXE)
 
 $(BIN)/embedding$(EXE): $(SRCDIR)/embedding.c
-	$(CC) $^ -o $@ $(CPPFLAGS-add) $(CPPFLAGS) $(CFLAGS-add) $(CFLAGS) $(LDFLAGS-add) $(LDFLAGS)
+	$(CC) $^ -o $@ $(CPPFLAGS_ADD) $(CPPFLAGS) $(CFLAGS_ADD) $(CFLAGS) $(LDFLAGS_ADD) $(LDFLAGS)
 
 $(BIN)/embedding-debug$(EXE): $(SRCDIR)/embedding.c
-	$(CC) $^ -o $@ $(CPPFLAGS-add) $(CPPFLAGS) $(CFLAGS-add) $(CFLAGS) $(LDFLAGS-add) $(LDFLAGS) $(DEBUGFLAGS)
+	$(CC) $^ -o $@ $(CPPFLAGS_ADD) $(CPPFLAGS) $(CFLAGS_ADD) $(CFLAGS) $(LDFLAGS_ADD) $(LDFLAGS) $(DEBUGFLAGS)
+
+check: $(BIN)/embedding$(EXE)
+	$(JULIA) $(SRCDIR)/embedding-test.jl $<
+	@echo SUCCESS
 
 clean:
 	-rm -f $(BIN)/embedding-debug$(EXE) $(BIN)/embedding$(EXE)
 
-.PHONY: release debug clean
+.PHONY: release debug clean check
 
 # Makefile debugging trick:
 # call print-VARIABLE to see the runtime value of any variable
